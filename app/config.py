@@ -13,8 +13,9 @@ class Settings:
     remnawave_base_url: str
     remnawave_api_key: str
     remnawave_subscription_endpoint: str
+    plan_days: int
+    plan_cost: int
     db_path: str = "bot.sqlite3"
-
 
 
 def load_settings() -> Settings:
@@ -31,5 +32,7 @@ def load_settings() -> Settings:
         remnawave_subscription_endpoint=os.getenv(
             "REMNAWAVE_SUBSCRIPTION_ENDPOINT", "/api/subscriptions"
         ),
+        plan_days=int(os.getenv("PLAN_DAYS", "30")),
+        plan_cost=int(os.getenv("PLAN_COST", "299")),
         db_path=os.getenv("DB_PATH", "bot.sqlite3"),
     )

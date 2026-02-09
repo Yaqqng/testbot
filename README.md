@@ -27,6 +27,8 @@ python bot.py
 - `MAIN_CHANNEL` — username канала (`@channel`) или числовой chat id.
 - `MAIN_CHANNEL_URL` — ссылка для пользователя (`https://t.me/...`) в тексте подсказок.
 - `REMNAWAVE_SUBSCRIPTION_ENDPOINT` — endpoint создания подписки (по умолчанию `/api/subscriptions`).
+- `PLAN_DAYS` — длительность VPN-подписки в днях.
+- `PLAN_COST` — стоимость VPN-подписки в рублях.
 
 ## Примечание по Remnawave
 В клиенте добавлены 2 варианта payload и 2 заголовка авторизации (`Authorization: Bearer ...` и `X-API-Key`), чтобы повысить совместимость с разными версиями панели.

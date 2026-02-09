@@ -17,10 +17,6 @@ from app.db import Database
 from app.keyboards import admin_menu, user_menu
 from app.remnawave_api import RemnawaveClient
 
-PLAN_DAYS = 30
-PLAN_COST = 299
-
-
 class AdminBalanceState(StatesGroup):
     waiting_for_user_id = State()
     waiting_for_delta = State()
@@ -166,26 +162,26 @@ async def buy_handler(callback: CallbackQuery) -> None:
         return
 
     user = db.get_or_create_user(callback.from_user.id, callback.from_user.username)
-    if user.balance < PLAN_COST:
+    if user.balance < settings.plan_cost:
         await callback.message.answer(
-            f"Недостаточно средств. Стоимость {PLAN_COST}₽, ваш баланс {user.balance}₽"
+            f"Недостаточно средств. Стоимость {settings.plan_cost}₽, ваш баланс {user.balance}₽"
         )
         await callback.answer()
         return
 
     try:
-        created = await remnawave.create_vpn_subscription(user.user_id, PLAN_DAYS)
+        created = await remnawave.create_vpn_subscription(user.user_id, settings.plan_days)
         remnawave_id = str(created.get("id") or created.get("uuid") or created.get("subscriptionId") or "")
     except Exception as error:  # noqa: BLE001
         await callback.message.answer(f"Ошибка при создании подписки в Remnawave: {error}")
         await callback.answer()
         return
 
-    db.update_balance(user.user_id, -PLAN_COST, callback.from_user.username)
-    db.create_subscription(user.user_id, PLAN_DAYS, remnawave_id)
+    db.update_balance(user.user_id, -settings.plan_cost, callback.from_user.username)
+    db.create_subscription(user.user_id, settings.plan_days, remnawave_id)
 
     await callback.message.answer(
-        f"Покупка успешна ✅\nСписано: {PLAN_COST}₽\nПериод: {PLAN_DAYS} дней\nID в панели: {remnawave_id or '-'}"
+        f"Покупка успешна ✅\nСписано: {settings.plan_cost}₽\nПериод: {settings.plan_days} дней\nID в панели: {remnawave_id or '-'}"
     )
     await callback.answer()
 
